@@ -203,31 +203,36 @@ export default function App() {
                 transition={{ duration: 0.8, delay: 0.6 }}
                 className="mb-16"
               >
-                <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 30px rgba(220, 38, 38, 0.3)",
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-red-700 hover:bg-red-700 text-white px-4 sm:px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 flex items-center space-x-3 mx-auto"
+                <Link
+                  target="_blank"
+                  href="https://www.instagram.com/oyoyoeventsapp?igsh=MWl2eHJlMDd4cmxicg=="
                 >
-                  <span>Submit entry video</span>
-                  <motion.svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
+                  <motion.button
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 10px 30px rgba(220, 38, 38, 0.3)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-red-700 hover:bg-red-700 text-white px-4 sm:px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 flex items-center space-x-3 mx-auto"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 17l9.2-9.2M17 17V7H7"
-                    />
-                  </motion.svg>
-                </motion.button>
+                    <span>Submit entry video</span>
+                    <motion.svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 17l9.2-9.2M17 17V7H7"
+                      />
+                    </motion.svg>
+                  </motion.button>
+                </Link>
               </motion.div>
 
               <motion.div
@@ -358,8 +363,10 @@ export default function App() {
                   <div className="flex gap-3 flex-col-reverse sm:flex-row sm:gap-10 sm:items-center space-y-2">
                     <div className="flex gap-2 flex-col items-center justify-center md:items-start md:justify-start">
                       <h3>Post on Instagram</h3>
-                      <p className="text-black">Tag/collaborate:</p>
-                      <p>@OyoyoEventsApp</p>
+                      <p className="text-black">
+                        tag, follow and collaborate with:
+                      </p>
+                      <p>@oyoyoeventsapp</p>
                       <p>
                         <span className="text-black">Hashtags:</span>{" "}
                         #OyoyoStarHunt
