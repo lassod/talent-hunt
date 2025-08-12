@@ -353,7 +353,7 @@ export default function App() {
               className="relative top-20 md:-top-20"
             >
               <div className="w-full flex items-end justify-end">
-                <div className="flex items-center md:items-end justify-center mx-auto sm:mr-0 md:justify-end max-w-[450px] flex-col gap-5">
+                <div className="flex items-center md:items-end justify-center mx-auto sm:mr-0 md:justify-end max-w-[500px] flex-col gap-5">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     className="w-10 animate-bounce h-10 md:w-16 md:h-16 bg-red-700 text-white rounded-full flex items-center justify-center text-2xl md:text-3xl font-black shadow-lg mx-auto md:mx-0"
