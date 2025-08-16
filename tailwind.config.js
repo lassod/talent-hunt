@@ -85,7 +85,7 @@ export const theme = {
     },
     fontFamily: {
       inter: ["Compact", "Inter"],
-      bastliga: ['"Compact"', ...defaultTheme.fontFamily.sans],
+      compact: ['"Compact"', "Inter"],
     },
   },
 };

@@ -1120,6 +1120,9 @@ video {
 .h-px {
   height: 1px;
 }
+.h-\[60px\] {
+  height: 60px;
+}
 .max-h-96 {
   max-height: 24rem;
 }
@@ -1249,6 +1252,9 @@ video {
 }
 .w-px {
   width: 1px;
+}
+.w-\[120px\] {
+  width: 120px;
 }
 .min-w-0 {
   min-width: 0px;
@@ -1838,6 +1844,10 @@ video {
 .fill-white {
   fill: #fff;
 }
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -2041,6 +2051,9 @@ video {
 }
 .align-middle {
   vertical-align: middle;
+}
+.font-compact {
+  font-family: "Compact", Inter;
 }
 .font-inter {
   font-family: Compact, Inter;

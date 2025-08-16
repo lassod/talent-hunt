@@ -54,7 +54,13 @@ export default function App() {
           <LandingContainer>
             <div className="mx-auto flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <img src="/Logo.png" alt="OYOYO" className="h-8 w-auto" />
+                <Image
+                  width={100}
+                  height={100}
+                  src="/Logo.png"
+                  alt="OYOYO"
+                  // className="h-[60px] w-[100px]"
+                />
               </div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
