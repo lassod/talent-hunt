@@ -66,7 +66,14 @@ export default function App() {
                 whileHover={{ scale: 1.05 }}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
               >
-                <span className="text-sm text-gray-300">Download app</span>
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://play.google.com/store/apps/details?id=com.lassod.oyoyoevents&hl=vn"
+                  className="text-sm text-gray-300"
+                >
+                  Download app
+                </Link>
               </motion.div>
             </div>
           </LandingContainer>
