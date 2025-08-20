@@ -572,7 +572,7 @@ export default function App() {
               {/* Center-Left: Address */}
               <div className="text-center md:text-left">
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Bookshop House 13th Floor,<br />
+                  Address: Bookshop House 13th Floor,<br />
                   50/52 Broad Street,<br />
                   Marina, Lagos
                 </p>
