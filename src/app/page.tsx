@@ -550,7 +550,7 @@ export default function App() {
             </div>
           </motion.section>
           <div className="mx-auto pt-[100px] text-center">
-            <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-4">
               {/* Left: Socials */}
               <div className="flex md:justify-start justify-center">
                 <div className="flex items-center gap-3 rounded-full border border-white/5 bg-white/5 px-4 py-2 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
@@ -569,7 +569,16 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Center: Logo + App label */}
+              {/* Center-Left: Address */}
+              <div className="text-center md:text-left">
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Bookshop House 13th Floor,<br />
+                  50/52 Broad Street,<br />
+                  Marina, Lagos
+                </p>
+              </div>
+
+              {/* Center-Right: Logo + App label */}
               <div className="text-center">
                 <Link href="/" className="inline-flex flex-col items-center">
                   <Image src="/Logo.png" alt="Logo" width={100} height={100} />
