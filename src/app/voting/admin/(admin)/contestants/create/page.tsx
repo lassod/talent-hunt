@@ -187,8 +187,9 @@ const AddContestantPage: React.FC = () => {
             } else {
                 setError(response.message || 'Failed to create contestant');
             }
-        } catch (err: any) {
-            setError(err.message || 'Failed to create contestant. Please try again.');
+        } catch (err) {
+            console.log(err)
+            setError('Failed to create contestant. Please try again.');
         } finally {
             setLoading(false);
         }

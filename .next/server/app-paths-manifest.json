@@ -1,14 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/voting/admin/page": "app/voting/admin/page.js",
-  "/page": "app/page.js",
   "/voting/casted-vote/page": "app/voting/casted-vote/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/voting/cast-vote/page": "app/voting/cast-vote/page.js",
-  "/voting/page": "app/voting/page.js",
-  "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": "app/voting/admin/(admin)/contestants/[contestant_id]/edit/page.js",
-  "/voting/admin/(admin)/results/page": "app/voting/admin/(admin)/results/page.js",
   "/voting/admin/(admin)/contestants/create/page": "app/voting/admin/(admin)/contestants/create/page.js",
-  "/voting/admin/(admin)/contestants/page": "app/voting/admin/(admin)/contestants/page.js",
-  "/voting/admin/(admin)/voters/page": "app/voting/admin/(admin)/voters/page.js"
+  "/voting/admin/(admin)/results/page": "app/voting/admin/(admin)/results/page.js",
+  "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": "app/voting/admin/(admin)/contestants/[contestant_id]/edit/page.js",
+  "/voting/admin/(admin)/contestants/page": "app/voting/admin/(admin)/contestants/page.js"
 }

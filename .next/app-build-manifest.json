@@ -1,122 +1,60 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/app/_not-found/page-4475c7182703d691.js"
-    ],
     "/layout": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/css/ada983b9c8f151ce.css",
-      "static/chunks/881-e19eaef23d901a97.js",
-      "static/chunks/app/layout-79674db50238659a.js"
-    ],
-    "/voting/admin/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/app/voting/admin/page-6e03f60bc89baaeb.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/8e1d74a4-ff359fe110f5402c.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/138-4274d06fc5ea9eb0.js",
-      "static/chunks/881-e19eaef23d901a97.js",
-      "static/chunks/524-49f9cb1645cd9f49.js",
-      "static/chunks/app/page-d46b2458dd3e955f.js"
-    ],
-    "/voting/casted-vote/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/8e1d74a4-ff359fe110f5402c.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/app/voting/casted-vote/page-bc6e0ffd086e75e7.js"
-    ],
-    "/voting/cast-vote/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/app/voting/cast-vote/page-634460d837258806.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/voting/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/8e1d74a4-ff359fe110f5402c.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/app/voting/page-04c93e1e2cb2fe12.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/page.js"
     ],
-    "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/app/voting/admin/(admin)/contestants/[contestant_id]/edit/page-deec848a9e2c8f00.js"
+    "/voting/cast-vote/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/cast-vote/page.js"
     ],
-    "/voting/admin/(admin)/layout": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/49-6be2ea4b86f832b0.js",
-      "static/chunks/138-4274d06fc5ea9eb0.js",
-      "static/chunks/app/voting/admin/(admin)/layout-cbb7a43d1dfeda05.js"
+    "/voting/casted-vote/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/casted-vote/page.js"
+    ],
+    "/voting/admin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/page.js"
     ],
     "/voting/admin/(admin)/results/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/ca377847-b372d6b442beeed9.js",
-      "static/chunks/302-c97d7b286fb3421c.js",
-      "static/chunks/app/voting/admin/(admin)/results/page-a2335e11fa1f4d9a.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/results/page.js"
     ],
-    "/voting/admin/(admin)/contestants/create/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/app/voting/admin/(admin)/contestants/create/page-1b23e8d99c4e390f.js"
+    "/voting/admin/(admin)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/layout.js"
     ],
     "/voting/admin/(admin)/contestants/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/138-4274d06fc5ea9eb0.js",
-      "static/chunks/app/voting/admin/(admin)/contestants/page-42ae8938a6746e4b.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/page.js"
     ],
     "/voting/admin/(admin)/voters/page": [
-      "static/chunks/webpack-f6d030703fac25dc.js",
-      "static/chunks/fd9d1056-c176ba62bfa905c4.js",
-      "static/chunks/23-b28699563f93e179.js",
-      "static/chunks/main-app-c93dda89c7651d13.js",
-      "static/chunks/795d4814-da2493f14cb441b0.js",
-      "static/chunks/app/voting/admin/(admin)/voters/page-ab4ec8859fb03a44.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/voters/page.js"
+    ],
+    "/voting/admin/(admin)/contestants/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/create/page.js"
+    ],
+    "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/[contestant_id]/edit/page.js"
     ]
   }
 }

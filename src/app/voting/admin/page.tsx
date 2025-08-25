@@ -82,8 +82,9 @@ const AdminLogin: React.FC = () => {
                 localStorage.setItem('admin_user', JSON.stringify(res.user));
                 router.push('/admin/results');
             }
-        } catch (err: any) {
-            setError(err.message || 'Login failed. Please try again.');
+        } catch (err) {
+            console.log(err)
+            setError( 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }

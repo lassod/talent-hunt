@@ -212,8 +212,10 @@ const EditContestantPage: React.FC = () => {
             } else {
                 setError(response.message || 'Failed to update contestant');
             }
-        } catch (err: any) {
-            setError(err.message || 'Failed to update contestant. Please try again.');
+        } catch (err) {
+            console.log(err)
+
+            setError('Failed to update contestant. Please try again.');
         } finally {
             setUpdating(false);
         }
