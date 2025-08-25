@@ -10,7 +10,7 @@ import {
     MdChevronRight,
     MdPerson
 } from 'react-icons/md';
-import logo from "../../public/logo.png";
+import logo from "@public/Logo.png"
 
 interface MenuItem {
     id: string;

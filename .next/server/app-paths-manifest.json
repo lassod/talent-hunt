@@ -1,7 +1,7 @@
 {
   "/voting/casted-vote/page": "app/voting/casted-vote/page.js",
   "/voting/admin/(admin)/contestants/create/page": "app/voting/admin/(admin)/contestants/create/page.js",
-  "/voting/admin/(admin)/results/page": "app/voting/admin/(admin)/results/page.js",
   "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": "app/voting/admin/(admin)/contestants/[contestant_id]/edit/page.js",
+  "/voting/admin/(admin)/results/page": "app/voting/admin/(admin)/results/page.js",
   "/voting/admin/(admin)/contestants/page": "app/voting/admin/(admin)/contestants/page.js"
 }
