@@ -1,3 +1,65 @@
 {
-  "pages": {}
+  "pages": {
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/voting/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/page.js"
+    ],
+    "/voting/cast-vote/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/cast-vote/page.js"
+    ],
+    "/voting/casted-vote/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/casted-vote/page.js"
+    ],
+    "/voting/admin/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/page.js"
+    ],
+    "/voting/admin/(admin)/results/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/results/page.js"
+    ],
+    "/voting/admin/(admin)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/layout.js"
+    ],
+    "/voting/admin/(admin)/contestants/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/page.js"
+    ],
+    "/voting/admin/(admin)/voters/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/voters/page.js"
+    ],
+    "/voting/admin/(admin)/contestants/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/create/page.js"
+    ],
+    "/voting/admin/(admin)/contestants/[contestant_id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/voting/admin/(admin)/contestants/[contestant_id]/edit/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ]
+  }
 }
