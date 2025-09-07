@@ -1,19 +1,21 @@
 'use client'
 
+import { useSearchParams,useParams } from 'next/navigation';
 import Navbar from "@/components/Navbar";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineVerifiedUser } from "react-icons/md";
 
-interface VotingSuccessProps {
-    searchParams: {
-        ticketId?: string;
-        candidateName?: string;
-    };
-}
 
-export default function VotingSuccess({ searchParams }: VotingSuccessProps) {
-    const ticketId = searchParams.ticketId ?? "TK1234"; // fallback for now
-    const candidateName = searchParams.candidateName ?? "Sarah Lawal"; // fallback for now
+
+export default function VotingSuccess() {
+    const params = useParams();
+    const searchParams = useSearchParams();
+
+    // Get route parameter (from [ticketId])
+    const ticketId = (params.ticketId as string) ?? "TK1234";
+
+    // Get query parameter (from ?candidate=...)
+    const candidateName = searchParams.get('candidate') ?? "Sarah Lawal";
 
     return (
         <div className="bg-[#FFF5F5] min-h-screen">

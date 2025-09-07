@@ -1,37 +1,135 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation';
 import Navbar from "@/components/Navbar";
 import { FaRegUser } from "react-icons/fa";
+import axios from "@/lib/axios";
+import { toast } from "@/components/ui/use-toast";
+
+// API Response interface
+interface ApiResponse<T = any> {
+    success: boolean;
+    data?: T;
+    message?: string;
+}
+
+interface loginResponse {
+    ticket: TicketData;
+    token:string
+}
+
+interface TicketData {
+    id: string;
+    ticket: string;
+    ticketName: string;
+    status: string;
+    votedfor:string
+}
+
+// API function to validate ticket
+const validateTicket = async (ticketId: string): Promise<ApiResponse<loginResponse>> => {
+    try {
+        const response = await axios.post<ApiResponse<loginResponse>>('/v1/tickets', {
+            ticket: ticketId
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error validating ticket:', error);
+        throw error;
+    }
+};
 
 function Home(){
+    const router = useRouter();
     const [ticketId, setTicketId] = useState<string>('');
     const [isValidating, setIsValidating] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     const handleValidateTicket = async (): Promise<void> => {
-        if (!ticketId.trim()) return;
+        if (!ticketId.trim()) {
+            setError('Please enter a ticket ID');
+            toast({
+                title: "Validation Error",
+                description: "Please enter a ticket ID",
+                variant: "destructive",
+            });
+            return;
+        }
 
         setIsValidating(true);
+        setError('');
 
         try {
-            // Add your validation logic here
-            // Example: await validateTicketAPI(ticketId);
+            const response = await validateTicket(ticketId.trim());
 
-            // Simulate API call for now
-            setTimeout(() => {
-                setIsValidating(false);
-                console.log('Validating ticket:', ticketId);
-                // Handle successful validation
-            }, 1000);
+            if (response.success && response.data) {
+                const { ticket, token } = response.data;
 
-        } catch (error) {
+                // Check if ticket status allows voting
+                if (ticket.status === 'voted') {
+                    setTimeout(() => {
+                        const candidateName = ticket.votedfor || '';
+                        router.push(`/voting/${ticket.ticket}/casted-vote?candidate=${encodeURIComponent(candidateName)}`);
+                    }, 1000);
+                }
+
+                if (ticket.status !== 'notvoted') {
+                    setError('This ticket is not available for voting.');
+                    toast({
+                        title: "Ticket Not Available",
+                        description: "This ticket is not available for voting.",
+                        variant: "destructive",
+                    });
+                    return;
+                }
+
+                // Store ticket data and token in localStorage for voting process
+                localStorage.setItem('validated_ticket', JSON.stringify(ticket));
+                localStorage.setItem('voting_token', token);
+
+                // Success - redirect to voting page
+                toast({
+                    title: "Success!",
+                    description: `Welcome ${ticket.ticketName}! Redirecting to voting...`,
+                });
+
+                setTimeout(() => {
+                    router.push('/voting/cast-vote');
+                }, 1000);
+
+            } else {
+                const errorMessage = response.message || 'Ticket validation failed. Please try again.';
+                setError(errorMessage);
+                toast({
+                    title: "Validation Failed",
+                    description: errorMessage,
+                    variant: "destructive",
+                });
+            }
+        } catch (err: any) {
+            let errorMessage = 'Ticket validation failed. Please try again.';
+
+            if (err.response?.status === 404) {
+                errorMessage = 'Ticket not found. Please check your ticket ID and try again.';
+            } else if (err.response?.data?.message) {
+                errorMessage = err.response.data.message;
+            }
+
+            setError(errorMessage);
+            toast({
+                title: "Validation Error",
+                description: errorMessage,
+                variant: "destructive",
+            });
+            console.error('Ticket validation failed:', err);
+        } finally {
             setIsValidating(false);
-            console.error('Ticket validation failed:', error);
-            // Handle validation error
         }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setTicketId(e.target.value);
+        if (error) setError(''); // Clear error when user starts typing
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -71,9 +169,21 @@ function Home(){
                             onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
                             placeholder="E.g., TK1234"
-                            className="w-full px-4 py-3 border border-[#E2E8F0] rounded-lg focus:ring-2 focus:ring-[#ED120F] focus:border-transparent outline-none transition-all duration-200 text-[#020617] placeholder-gray-400"
+                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#ED120F] focus:border-transparent outline-none transition-all duration-200 text-[#020617] placeholder-gray-400 ${
+                                error ? 'border-red-300 bg-red-50' : 'border-[#E2E8F0]'
+                            }`}
                             disabled={isValidating}
                         />
+
+                        {/* Error Message */}
+                        {error && (
+                            <p className="mt-2 text-sm text-red-600 flex items-center">
+                                <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                                {error}
+                            </p>
+                        )}
 
                         <button
                             onClick={handleValidateTicket}
