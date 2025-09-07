@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';   // <-- shadcn
 import {
     MdOutlineVerifiedUser,
     MdVisibility,
@@ -10,91 +11,86 @@ import {
     MdEmail,
     MdLock,
 } from 'react-icons/md';
-import logo from "@public/Logo.png"
+import logo from '@public/Logo.png';
+import { ApiHelper } from '@/utlis/ApiHelper';
+import type { ApiResponse } from '@/utlis/api.dtos';
 
+/* ---------- types ---------- */
+interface LoginUserData {
+    user: { id: string; email: string };
+    tokens: { accessToken: string; refreshToken: string };
+}
 interface LoginForm {
     email: string;
     password: string;
 }
-
-interface LoginResponse {
-    success: boolean;
-    message?: string;
-    user?: {
-        id: string;
-        name: string;
-        email: string;
-        role: string;
-    };
-}
+type LoginResponse = ApiResponse<LoginUserData>;
 
 /* ---------- API ---------- */
+const baseUrl = ApiHelper.getApiUrl();
 const loginAdmin = async (credentials: LoginForm): Promise<LoginResponse> => {
-    // TODO: replace with real endpoint
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (
-                credentials.email === '(admin)@oyoyostarhunt.com' &&
-                credentials.password === 'admin123'
-            ) {
-                resolve({
-                    success: true,
-                    user: {
-                        id: '1',
-                        name: 'Admin User',
-                        email: '(admin)@oyoyostarhunt.com',
-                        role: '(admin)',
-                    },
-                });
-            } else {
-                reject({ success: false, message: 'Invalid email or password' });
-            }
-        }, 1000);
+    const res = await fetch(`${baseUrl}/v1/auth/login/admin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
     });
+    const data: LoginResponse = await res.json();
+    if (!res.ok) throw new Error(data.message || `HTTP error! status: ${res.status}`);
+    return data;
 };
 
-/* ---------- Component ---------- */
+/* ---------- component ---------- */
 const AdminLogin: React.FC = () => {
     const router = useRouter();
+    const { toast } = useToast();
 
     const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-        if (error) setError('');
+        setForm((p) => ({ ...p, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.email || !form.password) {
-            setError('Please fill in all fields');
+            toast({ title: 'Please fill in all fields', variant: 'destructive' });
             return;
         }
 
         try {
             setLoading(true);
             const res = await loginAdmin(form);
-            if (res.success) {
-                localStorage.setItem('admin_user', JSON.stringify(res.user));
-                router.push('/admin/results');
+
+            if (res.success && res.data) {
+                localStorage.setItem('admin_access_token', res.data.tokens.accessToken);
+                localStorage.setItem('admin_refresh_token', res.data.tokens.refreshToken);
+                localStorage.setItem('admin_user', JSON.stringify(res.data.user));
+
+                toast({ title: 'Login successful! Welcome back.' });
+                router.push('/voting/admin/results');
+            } else {
+                toast({ title: res.message || 'Login failed', variant: 'destructive' });
             }
-        } catch (err) {
-            console.log(err)
-            setError( 'Login failed. Please try again.');
+        } catch (err: any) {
+            console.error(err);
+            toast({
+                title: err.message || 'Network error',
+                description: 'Check your connection and try again.',
+                variant: 'destructive',
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    const togglePassword = () => setShowPassword((prev) => !prev);
+    const togglePassword = () => setShowPassword((p) => !p);
 
+    /* ── UI unchanged except error banner removed ── */
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-            {/* subtle background pattern */}
             <div
                 className="absolute inset-0 opacity-30"
                 style={{
@@ -104,9 +100,7 @@ const AdminLogin: React.FC = () => {
             />
 
             <div className="w-full max-w-md relative z-10">
-                {/* card */}
                 <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                    {/* header */}
                     <div className="bg-gradient-to-r from-red-500 to-red-600 px-8 py-6 text-center">
                         <div className="flex justify-center mb-4">
                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
@@ -120,7 +114,6 @@ const AdminLogin: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* form */}
                     <div className="p-8">
                         <div className="text-center mb-6">
                             <h2 className="text-xl font-semibold text-gray-900 mb-2">Welcome back</h2>
@@ -129,19 +122,9 @@ const AdminLogin: React.FC = () => {
                             </p>
                         </div>
 
-                        {error && (
-                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                                <p className="text-red-600 text-sm font-medium">{error}</p>
-                            </div>
-                        )}
-
                         <form onSubmit={handleSubmit} className="space-y-5">
-                            {/* email */}
                             <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                                     Email Address
                                 </label>
                                 <div className="relative">
@@ -161,12 +144,8 @@ const AdminLogin: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* password */}
                             <div>
-                                <label
-                                    htmlFor="password"
-                                    className="block text-sm font-medium text-gray-700 mb-2"
-                                >
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                                     Password
                                 </label>
                                 <div className="relative">
@@ -198,7 +177,6 @@ const AdminLogin: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* submit */}
                             <button
                                 type="submit"
                                 disabled={loading}
@@ -214,8 +192,6 @@ const AdminLogin: React.FC = () => {
                                 )}
                             </button>
                         </form>
-
-
 
                         <div className="mt-6 text-center">
                             <p className="text-xs text-gray-500">

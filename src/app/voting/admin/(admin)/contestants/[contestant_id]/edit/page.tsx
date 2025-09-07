@@ -2,88 +2,60 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { MdOutlineArrowCircleLeft, MdImage } from 'react-icons/md';
+import axios from "@/lib/axios";
+import { toast } from "@/components/ui/use-toast";
+import {ApiResponse} from "@/utlis/api.dtos";
+
 
 // Types
-interface Contestant {
+export interface Contestant {
     id: string;
     name: string;
     talent: string;
-    email: string;
     image: string;
-    votes: number;
+    totalVotes: number;
 }
 
 interface UpdateContestantData {
     name: string;
     talent: string;
-    email: string;
     image?: File | null;
 }
 
-// API Functions (commented - using your NestJS backend)
-const fetchContestant = async (id: string): Promise<Contestant> => {
-    // Uncomment when using your NestJS backend
-    // try {
-    //   const response = await fetch(`/api/contestants/${id}`, {
-    //     headers: {
-    //       'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
-    //     },
-    //   });
-    //
-    //   if (!response.ok) throw new Error('Failed to fetch contestant');
-    //   return await response.json();
-    // } catch (error) {
-    //   console.error('Error fetching contestant:', error);
-    //   throw error;
-    // }
-
-    // Mock data for now
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                id: id,
-                name: 'Mira Passaquindici',
-                talent: 'Singer',
-                email: 'mira@gmail.com',
-                image: 'https://fastly.picsum.photos/id/1/300/300.jpg?hmac=jH5bDkLr6Tgy3oAg5khKCHeunZMHq0ehBZr6vGifPLY',
-                votes: 10
-            });
-        }, 500);
-    });
+const fetchContestantById = async (id: string): Promise<Contestant> => {
+    try {
+        const response = await axios.get<ApiResponse<Contestant>>(`/v1/contestants/${id}`);
+        if (response.data.success && response.data.data) {
+            return response.data.data;
+        } else {
+            throw new Error(response.data.message || 'Failed to fetch contestant');
+        }
+    } catch (error) {
+        console.error('Error fetching contestant:', error);
+        throw error;
+    }
 };
 
-const updateContestant = async (id: string, data: UpdateContestantData): Promise<{ success: boolean; message?: string }> => {
-    // Uncomment when using your NestJS backend
-    // try {
-    //   const formData = new FormData();
-    //   formData.append('name', data.name);
-    //   formData.append('talent', data.talent);
-    //   formData.append('email', data.email);
-    //   if (data.image) {
-    //     formData.append('image', data.image);
-    //   }
-    //
-    //   const response = await fetch(`/api/contestants/${id}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
-    //     },
-    //     body: formData,
-    //   });
-    //
-    //   if (!response.ok) throw new Error('Failed to update contestant');
-    //   return await response.json();
-    // } catch (error) {
-    //   console.error('Error updating contestant:', error);
-    //   throw error;
-    // }
+const updateContestant = async (id: string, data: UpdateContestantData): Promise<ApiResponse<Contestant>> => {
+    try {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('talent', data.talent);
+        if (data.image) {
+            formData.append('image', data.image);
+        }
 
-    // Mock success response
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({ success: true, message: 'Contestant updated successfully' });
-        }, 1000);
-    });
+        const response = await axios.patch<ApiResponse<Contestant>>(`/v1/contestants/${id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error updating contestant:', error);
+        throw error;
+    }
 };
 
 const EditContestantPage: React.FC = () => {
@@ -95,7 +67,6 @@ const EditContestantPage: React.FC = () => {
     const [formData, setFormData] = useState({
         name: '',
         talent: '',
-        email: ''
     });
     const [newImage, setNewImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
@@ -112,16 +83,22 @@ const EditContestantPage: React.FC = () => {
     const loadContestant = async (): Promise<void> => {
         try {
             setLoading(true);
-            const data = await fetchContestant(contestantId);
+            setError('');
+            const data = await fetchContestantById(contestantId);
             setContestant(data);
             setFormData({
                 name: data.name,
                 talent: data.talent,
-                email: data.email
             });
             setImagePreview(data.image);
-        } catch (err) {
-            setError('Failed to load contestant');
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to load contestant';
+            setError(errorMessage);
+            toast({
+                title: "Error",
+                description: errorMessage,
+                variant: "destructive",
+            });
             console.error(err);
         } finally {
             setLoading(false);
@@ -149,6 +126,11 @@ const EditContestantPage: React.FC = () => {
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!allowedTypes.includes(file.type)) {
                 setError('Invalid file type. Only JPEG and PNG are allowed.');
+                toast({
+                    title: "Error",
+                    description: 'Invalid file type. Only JPEG and PNG are allowed.',
+                    variant: "destructive",
+                });
                 return;
             }
 
@@ -156,6 +138,11 @@ const EditContestantPage: React.FC = () => {
             const maxSize = 5 * 1024 * 1024;
             if (file.size > maxSize) {
                 setError('File size too large. Maximum size is 5MB.');
+                toast({
+                    title: "Error",
+                    description: 'File size too large. Maximum size is 5MB.',
+                    variant: "destructive",
+                });
                 return;
             }
 
@@ -175,15 +162,6 @@ const EditContestantPage: React.FC = () => {
             return 'Talent is required';
         }
 
-        if (!formData.email.trim()) {
-            return 'Email is required';
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            return 'Please enter a valid email address';
-        }
-
         return null;
     };
 
@@ -193,6 +171,11 @@ const EditContestantPage: React.FC = () => {
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
+            toast({
+                title: "Validation Error",
+                description: validationError,
+                variant: "destructive",
+            });
             return;
         }
 
@@ -203,25 +186,39 @@ const EditContestantPage: React.FC = () => {
             const response = await updateContestant(contestantId, {
                 name: formData.name.trim(),
                 talent: formData.talent.trim(),
-                email: formData.email.trim(),
                 image: newImage,
             });
 
             if (response.success) {
-                router.push('/admin/contestants');
+                toast({
+                    title: "Success",
+                    description: "Contestant updated successfully!",
+                });
+                router.push('/voting/admin/contestants');
             } else {
-                setError(response.message || 'Failed to update contestant');
+                const errorMessage = response.message || 'Failed to update contestant';
+                setError(errorMessage);
+                toast({
+                    title: "Error",
+                    description: errorMessage,
+                    variant: "destructive",
+                });
             }
-        } catch (err) {
-            console.log(err)
-
-            setError('Failed to update contestant. Please try again.');
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to update contestant. Please try again.';
+            setError(errorMessage);
+            toast({
+                title: "Error",
+                description: errorMessage,
+                variant: "destructive",
+            });
+            console.error(err);
         } finally {
             setUpdating(false);
         }
     };
 
-    const handleCancel = (): void => {
+    const handleBack = (): void => {
         router.back();
     };
 
@@ -239,7 +236,7 @@ const EditContestantPage: React.FC = () => {
                 <div className="text-center">
                     <p className="text-red-600 mb-4">Contestant not found</p>
                     <button
-                        onClick={() => router.push('/admin/contestants')}
+                        onClick={() => router.push('/voting/admin/contestants')}
                         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                     >
                         Back to Contestants
@@ -250,14 +247,13 @@ const EditContestantPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 ">
-            <div className="">
-
+        <div className="min-h-screen bg-gray-50">
+            <div>
                 {/* Header */}
-                <div className="mb-8 bg-[#F8FAFC] w-full border-b border-[#E2E8F0] px-8 gap-4 p-5 flex ">
+                <div className="mb-8 bg-[#F8FAFC] w-full border-b border-[#E2E8F0] px-8 gap-4 p-5 flex">
                     <button
-                        onClick={handleCancel}
-                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors "
+                        onClick={handleBack}
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
                     >
                         <MdOutlineArrowCircleLeft className="w-5 h-5" />
                         <span className="font-medium text-[#18181B] text-[20px] leading-8">Edit page</span>
@@ -266,16 +262,15 @@ const EditContestantPage: React.FC = () => {
 
                 {/* Form Card */}
                 <div className="w-full max-w-2xl px-4 mx-auto">
-
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 w-full max-w-md mx-auto">
 
                         {/* Form Header */}
                         <div className="text-center mb-6">
-                            <h1 className="text-lg text-center  font-semibold text-gray-900">
-                                Edit  contestant
+                            <h1 className="text-lg text-center font-semibold text-gray-900">
+                                Edit contestant
                             </h1>
                             <p className="text-sm my-2 text-gray-500">
-                                Enter your ticket ID below to unlock your voting power!
+                                Update contestant details and information
                             </p>
                         </div>
 
@@ -350,16 +345,26 @@ const EditContestantPage: React.FC = () => {
                                 />
                             </div>
 
+                            {/* Contestant Stats (Read-only) */}
+                            {/*<div className="text-left">*/}
+                            {/*    <label className="block text-sm font-medium text-gray-700 mb-1">*/}
+                            {/*        Total Votes*/}
+                            {/*    </label>*/}
+                            {/*    <div className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-gray-600">*/}
+                            {/*        {contestant.totalVotes} votes*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
+
                             {/* Action Buttons */}
                             <div className="flex gap-3 pt-2">
                                 <button
                                     type="submit"
                                     disabled={updating}
-                                    className="flex-1 bg-[#ED120F] text-white py-2 rounded-md hover:bg-red-600 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-1 bg-[#ED120F] text-white py-2 rounded-md hover:bg-red-600 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                 >
                                     {updating ? (
                                         <>
-                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2 inline-block"></div>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
                                             Updating...
                                         </>
                                     ) : (
@@ -369,9 +374,9 @@ const EditContestantPage: React.FC = () => {
 
                                 <button
                                     type="button"
-                                    onClick={handleCancel}
+                                    onClick={handleBack}
                                     disabled={updating}
-                                    className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-md hover:bg-gray-200 transition-all duration-200 font-medium"
+                                    className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-md hover:bg-gray-200 transition-all duration-200 font-medium disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>

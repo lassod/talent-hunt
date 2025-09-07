@@ -1,5 +1,5 @@
 # Next.js build output
-.next/
+.next
 
 .idea
 
@@ -17,3 +17,4 @@ pnpm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.next
