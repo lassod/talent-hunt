@@ -18,7 +18,7 @@ interface TimelineData {
     id: string;
     startDate: string | null;
     endDate: string | null;
-    status: 'not_started' | 'active' | 'ended';
+    status: 'not_started' | 'started' ;
     createdAt: string;
     updatedAt: string;
 }
@@ -34,9 +34,11 @@ const fetchTimeline = async (): Promise<ApiResponse<TimelineData>> => {
     }
 };
 
-const startVotingNow = async (): Promise<ApiResponse<TimelineData>> => {
+const startVotingNow = async (timelineId: string): Promise<ApiResponse<TimelineData>> => {
     try {
-        const response = await axios.post<ApiResponse<TimelineData>>('/v1/timelines');
+        const response = await axios.patch<ApiResponse<TimelineData>>(`/v1/timelines/${timelineId}`,{
+            status: 'started',
+        });
         return response.data;
     } catch (error) {
         console.error('Error starting voting:', error);
@@ -156,7 +158,7 @@ const TimelinePage: React.FC = () => {
     const handleStartNow = async (): Promise<void> => {
         try {
             setUpdating(true);
-            const response = await startVotingNow();
+            const response = await startVotingNow(timeline?.id ?? '');
 
             if (response.success && response.data) {
                 setTimeline(response.data);
@@ -250,11 +252,15 @@ const TimelinePage: React.FC = () => {
 
         const statusConfig = {
             not_started: { text: 'Not started', className: 'bg-gray-100 text-gray-700' },
-            active: { text: 'Active', className: 'bg-green-100 text-green-700' },
-            ended: { text: 'Ended', className: 'bg-red-100 text-red-700' }
+            started: { text: 'started', className: 'bg-green-100 text-green-700' },
+        };
+        const config = statusConfig[timeline.status] || {
+            text: timeline.status || 'Unknown',
+            className: 'bg-gray-100 text-gray-700'
         };
 
-        const config = statusConfig[timeline.status];
+
+        // const config = statusConfig[timeline.status];
         return (
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${config.className}`}>
                 {config.text}
@@ -280,7 +286,7 @@ const TimelinePage: React.FC = () => {
             } else {
                 return 'Schedule not set - click "Start now" to begin';
             }
-        } else if (timeline.status === 'active') {
+        } else if (timeline.status === 'started') {
             if (timeline.endDate) {
                 const endTime = new Date(timeline.endDate).getTime();
                 const timeRemaining = endTime - now;
@@ -347,9 +353,9 @@ const TimelinePage: React.FC = () => {
                         <div className="flex gap-4">
                             <button
                                 onClick={handleStartNow}
-                                disabled={updating || timeline?.status === 'active'}
+                                disabled={updating || timeline?.status === 'started'}
                                 className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                                    timeline?.status === 'active' || updating
+                                    timeline?.status === 'started' || updating
                                         ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                                         : 'bg-red-500 text-white hover:bg-red-600'
                                 }`}
@@ -368,7 +374,7 @@ const TimelinePage: React.FC = () => {
                             </button>
 
                             <button
-                                disabled={timeline?.status !== 'active'}
+                                disabled={timeline?.status !== 'started'}
                                 className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-gray-200 text-gray-500 cursor-not-allowed"
                             >
                                 <MdStop className="w-4 h-4" />

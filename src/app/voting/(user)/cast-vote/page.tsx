@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import {ConfirmationDialog} from "@/components/ConfirmationDialg";
 import { useRouter } from 'next/navigation';
-import axios from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
+import axios from "axios";
+import {ApiHelper} from "@/utlis/ApiHelper";
 
 // API Response interfaces
 interface ApiPaginatedResponse<T = any> {
@@ -67,10 +68,12 @@ const defaultPagination: PaginationMeta = {
     hasPreviousPage: false,
 };
 
+const baseUrl = ApiHelper.getApiUrl()
+
 // API Functions
 const fetchContestants = async (page: number = 1): Promise<ApiPaginatedResponse<Contestant>> => {
     try {
-        const response = await axios.get<ApiPaginatedResponse<Contestant>>(`/v1/contestants`);
+        const response = await axios.get<ApiPaginatedResponse<Contestant>>(`${baseUrl}/v1/contestants`);
         return response.data;
     } catch (error) {
         console.error('Error fetching contestants:', error);
@@ -90,9 +93,9 @@ const castVote = async (contestantId: string): Promise<ApiResponse<any>> => {
         const ticket: ValidatedTicket = JSON.parse(ticketString);
 
         const response = await axios.post<ApiResponse<any>>(
-            '/v1/votes',
+            `${baseUrl}/v1/votes`,
             {
-                ticketId: ticket.ticket,
+                ticketId: ticket.id,
                 contestantId
             },
             {
@@ -202,7 +205,7 @@ const VotingPage: React.FC = () => {
                 localStorage.removeItem('validated_ticket');
 
                 // Redirect to success page
-                router.push('/voting/casted-vote');
+                router.push(`/voting/${ticketData?.ticket}/casted-vote`);
             } else {
                 const errorMessage = response.message || 'Failed to cast vote';
                 toast({

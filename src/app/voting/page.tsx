@@ -23,7 +23,7 @@ interface TicketData {
     ticket: string;
     ticketName: string;
     status: string;
-    votedfor:string
+    votedFor:string
 }
 
 // API function to validate ticket
@@ -68,7 +68,7 @@ function Home(){
                 // Check if ticket status allows voting
                 if (ticket.status === 'voted') {
                     setTimeout(() => {
-                        const candidateName = ticket.votedfor || '';
+                        const candidateName = ticket.votedFor || '';
                         router.push(`/voting/${ticket.ticket}/casted-vote?candidate=${encodeURIComponent(candidateName)}`);
                     }, 1000);
                 }

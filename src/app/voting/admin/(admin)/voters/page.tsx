@@ -32,17 +32,17 @@ interface ApiResponse<T = any> {
 // Types
 interface Voter {
     id: string;
-    name: string;
-    ticketId: string;
-    votedFor: string;
-    votedAt: string;
+    voterName: string;
+    ticket: string;
+    voteredFor: string;
+    createdAt: string;
 }
 
 interface VotersStats {
     totalVotes: number;
-    totalContestants: number;
-    leadingContestant: string;
-    avgVotes: number;
+    totalContestant: number;
+    leadingCandidate: string;
+    averageVotes: number;
 }
 
 interface PaginationMeta {
@@ -273,7 +273,7 @@ const VotersPage: React.FC = () => {
                     {statsLoading ? (
                         <div className="animate-pulse h-8 bg-gray-200 rounded w-16"></div>
                     ) : (
-                        <p className="text-3xl font-bold text-gray-900">{stats?.totalContestants || 0}</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats?.totalContestant || 0}</p>
                     )}
                 </div>
 
@@ -283,7 +283,7 @@ const VotersPage: React.FC = () => {
                     {statsLoading ? (
                         <div className="animate-pulse h-8 bg-gray-200 rounded w-24"></div>
                     ) : (
-                        <p className="text-3xl font-bold text-gray-900">{stats?.leadingContestant || 'N/A'}</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats?.leadingCandidate || 'N/A'}</p>
                     )}
                 </div>
 
@@ -293,7 +293,7 @@ const VotersPage: React.FC = () => {
                     {statsLoading ? (
                         <div className="animate-pulse h-8 bg-gray-200 rounded w-16"></div>
                     ) : (
-                        <p className="text-3xl font-bold text-gray-900">{stats?.avgVotes || 0}</p>
+                        <p className="text-3xl font-bold text-gray-900">{stats?.averageVotes || 0}</p>
                     )}
                 </div>
             </div>
@@ -336,17 +336,17 @@ const VotersPage: React.FC = () => {
                                     className={`border-b border-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'} hover:bg-gray-50 transition-colors`}
                                 >
                                     <td className="py-4 px-6">
-                                        <p className="font-medium text-gray-900">{voter.name}</p>
+                                        <p className="font-medium text-gray-900">{voter.voterName}</p>
                                     </td>
                                     <td className="py-4 px-6">
-                                        <p className="text-gray-700">{voter.ticketId}</p>
+                                        <p className="text-gray-700">{voter.ticket}</p>
                                     </td>
                                     <td className="py-4 px-6">
-                                        <p className="text-gray-700">{voter.votedFor}</p>
+                                        <p className="text-gray-700">{voter.voteredFor}</p>
                                     </td>
                                     <td className="py-4 px-6">
                                         <p className="text-gray-700">
-                                            {new Date(voter.votedAt).toLocaleDateString()}
+                                            {new Date(voter.createdAt).toLocaleDateString()}
                                         </p>
                                     </td>
                                 </tr>
