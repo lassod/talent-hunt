@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -205,7 +207,8 @@ const VotingPage: React.FC = () => {
                 localStorage.removeItem('validated_ticket');
 
                 // Redirect to success page
-                router.push(`/voting/${ticketData?.ticket}/casted-vote`);
+                const candidateName = response.data.votedFor || '';
+                router.push(`/voting/${ticketData?.ticket}/casted-vote?candidate=${encodeURIComponent(candidateName)}`);
             } else {
                 const errorMessage = response.message || 'Failed to cast vote';
                 toast({

@@ -40,6 +40,7 @@ interface ContestantResult {
     percentage: number;
     image: string;
     rank?: number;
+    rising: boolean;
     trend?: "rising" | "falling";
 }
 
@@ -192,7 +193,7 @@ const AdminResults: React.FC = () => {
     }
 
     return (
-        <div className="space-y-8 p-6">
+        <div className="space-y-8 p-3 md:p-6">
             {/* Header */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <div>
@@ -246,59 +247,66 @@ const AdminResults: React.FC = () => {
                         leaderboard.map((contestant) => (
                             <div
                                 key={contestant.id}
-                                className="flex items-center gap-4 p-3 border-b border-gray-100 last:border-0"
+                                className="flex items-center justify-between w-full flex-col lg:flex-row gap-4 p-3 border-b border-gray-100 last:border-0"
                             >
-                                {/* Rank */}
-                                <div className="text-red-500 font-bold w-6">#{contestant.rank}</div>
+                                <div className="flex items-center gap-4 ">
+                                    {/* Rank */}
+                                    <div className="text-red-500 font-bold w-6">#{contestant.rank}</div>
 
-                                {/* Avatar */}
-                                <img
-                                    src={contestant.image}
-                                    alt={contestant.name}
-                                    className="w-10 h-10 rounded-full object-cover"
-                                />
+                                    {/* Avatar */}
+                                    <img
+                                        src={contestant.image}
+                                        alt={contestant.name}
+                                        className="md:w-10 w-7 h-7 md:h-10 shrink-0 rounded-full object-cover"
+                                    />
 
-                                {/* Info */}
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-medium text-gray-900">{contestant.name}</p>
+                                    {/* Info */}
+                                    <div className="flex-1 ">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-medium text-[16px] text-gray-900">{contestant.name}</p>
 
-                                        {/* Trend Badge */}
-                                        {contestant.trend && (
-                                            <span
-                                                className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
-                                                    contestant.trend === "rising"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                }`}
-                                            >
-                                                {contestant.trend === "rising" ? (
+                                            {/* Trend Badge */}
+                                            {contestant.rising && (
+                                                <span
+                                                    className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
+                                                        contestant.rising
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-red-100 text-red-700"
+                                                    }`}
+                                                >
+                                                {contestant.rising ? (
                                                     <ArrowUp className="w-3 h-3" />
                                                 ) : (
                                                     <ArrowDown className="w-3 h-3" />
                                                 )}
-                                                {contestant.trend === "rising" ? "Rising" : "Falling"}
+                                                    {contestant.rising  ? "Rising" : "Falling"}
                                             </span>
-                                        )}
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500">{contestant.talent}</p>
                                     </div>
-                                    <p className="text-sm text-gray-500">{contestant.talent}</p>
+
                                 </div>
 
-                                {/* Progress */}
-                                <div className="lg:w-64">
-                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                        <div
-                                            className="bg-green-500 h-2 rounded-full"
-                                            style={{ width: `${contestant.percentage || 0}%` }}
-                                        ></div>
+                                <div className="flex items-center justify-center flex-row gap-4">
+                                    {/* Progress */}
+                                    <div className="lg:w-64 min-w-[200px] ">
+                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                            <div
+                                                className="bg-green-500 h-2 rounded-full"
+                                                style={{ width: `${contestant.percentage || 0}%` }}
+                                            ></div>
+                                        </div>
                                     </div>
+
+                                    {/* Votes */}
+                                    <div className="text-right min-w-[80px]">
+                                        <p className="font-semibold text-gray-900">{contestant.totalVotes.toLocaleString()}</p>
+                                        <p className="text-xs text-gray-500">{contestant.percentage || 0}%</p>
+                                    </div>
+
                                 </div>
 
-                                {/* Votes */}
-                                <div className="text-right min-w-[80px]">
-                                    <p className="font-semibold text-gray-900">{contestant.totalVotes.toLocaleString()}</p>
-                                    <p className="text-xs text-gray-500">{contestant.percentage || 0}%</p>
-                                </div>
                             </div>
                         ))
                     ) : (
@@ -313,4 +321,5 @@ const AdminResults: React.FC = () => {
 };
 
 export default AdminResults;
+
 
