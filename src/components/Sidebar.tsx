@@ -182,9 +182,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     )}
 
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">
-                            {user ? `${user.first_name} ${user.last_name}` : 'Admin User'}
-                        </p>
+                        {/*<p className="text-sm font-medium text-white truncate">*/}
+                        {/*    {user ? `${user.first_name} ${user.last_name}` : 'Admin User'}*/}
+                        {/*</p>*/}
                         <p className="text-xs text-green-200 truncate">
                             {user?.email || 'admin@example.com'}
                         </p>
