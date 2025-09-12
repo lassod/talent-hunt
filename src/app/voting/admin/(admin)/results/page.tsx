@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { ArrowUp, ArrowDown } from "lucide-react";
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
+import {useToast} from "@/hooks/toastHooks";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -69,6 +69,7 @@ const AdminResults: React.FC = () => {
     const [stats, setStats] = useState<StatsData | null>(null);
     const [leaderboard, setLeaderboard] = useState<ContestantResult[]>([]);
     const [error, setError] = useState<string>('');
+    const {showToast, ToastContainerComponent} = useToast()
 
     useEffect(() => {
         loadResultsData();
@@ -89,19 +90,16 @@ const AdminResults: React.FC = () => {
             if (response.success && response.data) {
                 setStats(response.data);
             } else {
-                toast({
-                    title: "Error",
-                    description: response.message || 'Failed to load voting statistics',
-                    variant: "destructive",
-                });
+                showToast(
+                    `${response.message || 'Failed to load voting statistics'}`,
+                    'error');
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to load voting statistics';
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast(
+                `${errorMessage || 'Failed to load voting statistics'}`,
+                'error');
+
             console.error(err);
         }
     };
@@ -120,20 +118,16 @@ const AdminResults: React.FC = () => {
             } else {
                 const errorMessage = response.message || 'Failed to load leaderboard';
                 setError(errorMessage);
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast(
+                    `${errorMessage || 'Failed to load voting statistics'}`,
+                    'error');
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to load leaderboard';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast(
+                `${errorMessage || 'Failed to load voting statistics'}`,
+                'error');
             console.error(err);
         }
     };
@@ -233,8 +227,8 @@ const AdminResults: React.FC = () => {
 
             {/* Vote Distribution Chart */}
             {leaderboard.length > 0 && (
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-6">Vote Distribution</h3>
+                <div className="bg-white p-1 lg:p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h3 className="text-lg font-semibold text-gray-900 pl-2 pt-2 mb-6">Vote Distribution</h3>
                     <Bar data={chartData} options={chartOptions} />
                 </div>
             )}
@@ -249,7 +243,8 @@ const AdminResults: React.FC = () => {
                                 key={contestant.id}
                                 className="flex items-center justify-between w-full flex-col lg:flex-row gap-4 p-3 border-b border-gray-100 last:border-0"
                             >
-                                <div className="flex items-center gap-4 ">
+                                <div className="flex justify-between  items-center w-full lg:w-fit  gap-4 ">
+
                                     {/* Rank */}
                                     <div className="text-red-500 font-bold w-6">#{contestant.rank}</div>
 
@@ -316,6 +311,7 @@ const AdminResults: React.FC = () => {
                     )}
                 </div>
             </div>
+            {ToastContainerComponent}
         </div>
     );
 };

@@ -6,9 +6,9 @@ import { FiEdit } from 'react-icons/fi';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
-import { toast } from '@/components/ui/use-toast';
 import { ApiPaginatedResponse, PaginationMeta } from '@/utlis/api.dtos';
 import {ConfirmationDialog} from "@/components/ConfirmationDialg";
+import {useToast} from "@/hooks/toastHooks";
 
 // Types
 export interface Contestant {
@@ -45,6 +45,8 @@ const ContestantsPage: React.FC = () => {
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
 
+    const {showToast,ToastContainerComponent} = useToast()
+
     useEffect(() => {
         loadContestants();
     }, []);
@@ -61,12 +63,16 @@ const ContestantsPage: React.FC = () => {
             } else {
                 const msg = res.message || 'Failed to load contestants';
                 setError(msg);
-                toast({ title: 'Error', description: msg, variant: 'destructive' });
+                showToast(
+                     msg,
+                    'error');
             }
         } catch (e: any) {
             const msg = e.response?.data?.message || 'Failed to load contestants';
             setError(msg);
-            toast({ title: 'Error', description: msg, variant: 'destructive' });
+            showToast(
+                msg,
+                'error');
         } finally {
             setLoading(false);
         }
@@ -86,22 +92,18 @@ const ContestantsPage: React.FC = () => {
 
         try {
             await axios.delete(`/v1/contestants/${selectedContestant.id}`);
-
-            toast({
-                title: 'Success',
-                description: `${selectedContestant.name} has been deleted.`,
-            });
+            showToast(
+                `${selectedContestant.name} has been deleted.`,
+                'success');
 
             // close dialog + reload list
             setShowConfirm(false);
             setSelectedContestant(null);
-            loadContestants(pagination.page);
+            await loadContestants(pagination.page);
         } catch (e: any) {
-            toast({
-                title: 'Error',
-                description: e.response?.data?.message || 'Delete failed',
-                variant: 'destructive',
-            });
+            showToast(
+                `${e.response?.data?.message} || 'Delete failed'`,
+                'success');
         }
     };
 
@@ -259,6 +261,7 @@ const ContestantsPage: React.FC = () => {
                 confirmText="Proceed"
                 cancelText="Cancel"
             />
+            {ToastContainerComponent}
         </div>
     );
 };

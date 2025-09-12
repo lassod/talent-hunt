@@ -199,7 +199,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {/* Mobile Menu Button */}
             <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#011308]/30 text-black rounded-lg shadow-lg hover:bg-[#033515] transition-colors"
+                className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-[#011308]/30 text-black rounded-lg shadow-lg hover:bg-[#033515] transition-colors"
                 aria-label="Open menu"
             >
                 <MdMenu className="w-6 h-6" />

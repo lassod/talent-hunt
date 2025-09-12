@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "../../globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import ToastRenderer from "@/components/toastRenderer";
+
+
 
 export const metadata: Metadata = {
   title: "Oyoyo Events - Transform Your Event Planning",
@@ -15,11 +17,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en" className="font-compact">
       <body className="font-inter">
-        <Toaster />
         {children}
+        <ToastRenderer />
       </body>
     </html>
   );

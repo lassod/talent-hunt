@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/use-toast';   // <-- shadcn
 import {
     MdOutlineVerifiedUser,
     MdVisibility,
@@ -14,6 +13,7 @@ import {
 import logo from '@public/Logo.png';
 import { ApiHelper } from '@/utlis/ApiHelper';
 import type { ApiResponse } from '@/utlis/api.dtos';
+import {useToast} from "@/hooks/toastHooks";
 
 /* ---------- types ---------- */
 interface LoginUserData {
@@ -42,7 +42,7 @@ const loginAdmin = async (credentials: LoginForm): Promise<LoginResponse> => {
 /* ---------- component ---------- */
 const AdminLogin: React.FC = () => {
     const router = useRouter();
-    const { toast } = useToast();
+    const { showToast, ToastContainerComponent } = useToast();
 
     const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const AdminLogin: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.email || !form.password) {
-            toast({ title: 'Please fill in all fields', variant: 'destructive' });
+            showToast( 'Please fill in all fields',  'error' );
             return;
         }
 
@@ -68,19 +68,16 @@ const AdminLogin: React.FC = () => {
                 localStorage.setItem('admin_access_token', res.data.tokens.accessToken);
                 localStorage.setItem('admin_refresh_token', res.data.tokens.refreshToken);
                 localStorage.setItem('admin_user', JSON.stringify(res.data.user));
-
-                toast({ title: 'Login successful! Welcome back.' });
+                showToast('Login successful!',  'success')
                 router.push('/voting/admin/results');
             } else {
-                toast({ title: res.message || 'Login failed', variant: 'destructive' });
+                showToast(`${res.message || 'Login failed' }`, 'error')
             }
         } catch (err: any) {
             console.error(err);
-            toast({
-                title: err.message || 'Network error',
-                description: 'Check your connection and try again.',
-                variant: 'destructive',
-            });
+            showToast(`${err.message || 'Network error' }`, 'error')
+
+
         } finally {
             setLoading(false);
         }
@@ -207,6 +204,7 @@ const AdminLogin: React.FC = () => {
                     </p>
                 </div>
             </div>
+            {ToastContainerComponent}
         </div>
     );
 };

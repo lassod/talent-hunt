@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { MdOutlineArrowCircleLeft} from 'react-icons/md';
 import ImageUploader from "@/components/ImageUploader";
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
 import {ApiResponse} from "@/utlis/api.dtos";
+import {useToast} from "@/hooks/toastHooks";
 
 // Types
 interface ContestantFormData {
@@ -47,6 +47,7 @@ const AddContestantPage: React.FC = () => {
     });
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const {showToast, ToastContainerComponent} = useToast()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
@@ -107,28 +108,22 @@ const AddContestantPage: React.FC = () => {
             });
 
             if (response.success) {
-                toast({
-                    title: "Success",
-                    description: "Contestant created successfully!"
-                });
+                showToast( "Contestant created successfully!" , 'error')
+
+
                 router.push('/voting/admin/contestants');
             } else {
                 const errorMessage = response.message || 'Failed to create contestant';
                 setError(errorMessage);
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: 'destructive'
-                });
+                showToast( errorMessage , 'error')
+
+
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || err.message || 'Failed to create contestant. Please try again.';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: 'destructive'
-            });
+            showToast( errorMessage , 'error')
+
         } finally {
             setLoading(false);
         }
@@ -249,6 +244,7 @@ const AddContestantPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {ToastContainerComponent}
         </div>
     );
 };

@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { MdOutlineArrowCircleLeft, MdImage } from 'react-icons/md';
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
 import {ApiResponse} from "@/utlis/api.dtos";
+import {useToast} from "@/hooks/toastHooks";
+
 
 
 // Types
@@ -73,6 +74,8 @@ const EditContestantPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const [error, setError] = useState('');
+    const {showToast, ToastContainerComponent} = useToast()
+
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -94,11 +97,7 @@ const EditContestantPage: React.FC = () => {
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || err.message || 'Failed to load contestant';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
             console.error(err);
         } finally {
             setLoading(false);
@@ -126,11 +125,8 @@ const EditContestantPage: React.FC = () => {
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!allowedTypes.includes(file.type)) {
                 setError('Invalid file type. Only JPEG and PNG are allowed.');
-                toast({
-                    title: "Error",
-                    description: 'Invalid file type. Only JPEG and PNG are allowed.',
-                    variant: "destructive",
-                });
+                showToast( 'Invalid file type. Only JPEG and PNG are allowed.' , 'error')
+
                 return;
             }
 
@@ -138,11 +134,8 @@ const EditContestantPage: React.FC = () => {
             const maxSize = 5 * 1024 * 1024;
             if (file.size > maxSize) {
                 setError('File size too large. Maximum size is 5MB.');
-                toast({
-                    title: "Error",
-                    description: 'File size too large. Maximum size is 5MB.',
-                    variant: "destructive",
-                });
+
+                showToast( 'File size too large. Maximum size is 5MB.' , 'error')
                 return;
             }
 
@@ -171,11 +164,7 @@ const EditContestantPage: React.FC = () => {
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
-            toast({
-                title: "Validation Error",
-                description: validationError,
-                variant: "destructive",
-            });
+            showToast( validationError , 'error')
             return;
         }
 
@@ -190,28 +179,19 @@ const EditContestantPage: React.FC = () => {
             });
 
             if (response.success) {
-                toast({
-                    title: "Success",
-                    description: "Contestant updated successfully!",
-                });
+                showToast( "Contestant updated successfully!", 'success')
                 router.push('/voting/admin/contestants');
             } else {
                 const errorMessage = response.message || 'Failed to update contestant';
                 setError(errorMessage);
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast( errorMessage , 'error')
+
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || err.message || 'Failed to update contestant. Please try again.';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
+
             console.error(err);
         } finally {
             setUpdating(false);

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from "@/components/Navbar";
 import { FaRegUser } from "react-icons/fa";
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
+import {useToast} from "@/hooks/toastHooks";
 
 // API Response interface
 interface ApiResponse<T = any> {
@@ -44,15 +44,13 @@ function Home(){
     const [ticketId, setTicketId] = useState<string>('');
     const [isValidating, setIsValidating] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const {showToast, ToastContainerComponent} = useToast()
+
 
     const handleValidateTicket = async (): Promise<void> => {
         if (!ticketId.trim()) {
             setError('Please enter a ticket ID');
-            toast({
-                title: "Validation Error",
-                description: "Please enter a ticket ID",
-                variant: "destructive",
-            });
+            showToast( "Please enter a ticket ID" , 'error')
             return;
         }
 
@@ -75,11 +73,7 @@ function Home(){
 
                 if (ticket.status !== 'notvoted') {
                     setError('This ticket is not available for voting.');
-                    toast({
-                        title: "Ticket Not Available",
-                        description: "This ticket is not available for voting.",
-                        variant: "destructive",
-                    });
+                    showToast( "This ticket is not available for voting." , 'error')
                     return;
                 }
 
@@ -88,10 +82,8 @@ function Home(){
                 localStorage.setItem('voting_token', token);
 
                 // Success - redirect to voting page
-                toast({
-                    title: "Success!",
-                    description: `Welcome ${ticket.ticketName}! Redirecting to voting...`,
-                });
+
+                showToast(`Welcome ${ticket.ticketName}! Redirecting to voting...` , 'success')
 
                 setTimeout(() => {
                     router.push('/voting/cast-vote');
@@ -100,11 +92,7 @@ function Home(){
             } else {
                 const errorMessage = response.message || 'Ticket validation failed. Please try again.';
                 setError(errorMessage);
-                toast({
-                    title: "Validation Failed",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast( errorMessage , 'error')
             }
         } catch (err: any) {
             let errorMessage = 'Ticket validation failed. Please try again.';
@@ -116,11 +104,7 @@ function Home(){
             }
 
             setError(errorMessage);
-            toast({
-                title: "Validation Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
             console.error('Ticket validation failed:', err);
         } finally {
             setIsValidating(false);
@@ -212,6 +196,7 @@ function Home(){
                     </div>
                 </div>
             </div>
+            {ToastContainerComponent}
         </div>
     );
 }

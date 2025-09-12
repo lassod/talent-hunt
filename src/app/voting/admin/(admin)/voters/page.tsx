@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
+import {useToast} from "@/hooks/toastHooks";
 
 // API Response interfaces
 interface ApiPaginatedResponse<T = any> {
@@ -94,6 +94,8 @@ const VotersPage: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
 
+    const {showToast, ToastContainerComponent} = useToast()
+
     useEffect(() => {
         loadVotersData();
     }, []);
@@ -122,20 +124,14 @@ const VotersPage: React.FC = () => {
             } else {
                 const errorMessage = response.message || 'Failed to load voters';
                 setError(errorMessage);
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast( errorMessage , 'error')
+
+
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to load voters';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
             console.error(err);
         } finally {
             setLoading(false);
@@ -150,18 +146,10 @@ const VotersPage: React.FC = () => {
             if (response.success && response.data) {
                 setStats(response.data);
             } else {
-                toast({
-                    title: "Error",
-                    description: response.message || 'Failed to load voter statistics',
-                    variant: "destructive",
-                });
+                showToast( `${response.message|| 'Failed to load voter statistics'}` , 'error')
             }
         } catch (err: any) {
-            toast({
-                title: "Error",
-                description: err.response?.data?.message || 'Failed to load voter statistics',
-                variant: "destructive",
-            });
+            showToast( `${ err.response?.data?.message|| 'Failed to load voter statistics'}` , 'error')
             console.error(err);
         } finally {
             setStatsLoading(false);
@@ -398,6 +386,8 @@ const VotersPage: React.FC = () => {
                     </div>
                 )}
             </div>
+            {ToastContainerComponent}
+
         </div>
     );
 };

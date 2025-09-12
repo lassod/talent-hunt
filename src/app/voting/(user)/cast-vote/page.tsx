@@ -6,9 +6,9 @@ import React, { useState, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import {ConfirmationDialog} from "@/components/ConfirmationDialg";
 import { useRouter } from 'next/navigation';
-import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import {ApiHelper} from "@/utlis/ApiHelper";
+import {useToast} from "@/hooks/toastHooks";
 
 // API Response interfaces
 interface ApiPaginatedResponse<T = any> {
@@ -124,6 +124,8 @@ const VotingPage: React.FC = () => {
     const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const {showToast, ToastContainerComponent} = useToast()
+
 
     const router = useRouter();
 
@@ -160,20 +162,12 @@ const VotingPage: React.FC = () => {
             } else {
                 const errorMessage = response.message || 'Failed to load contestants';
                 setError(errorMessage);
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast( errorMessage , 'error')
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to load contestants';
             setError(errorMessage);
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
             console.error(err);
         } finally {
             setLoading(false);
@@ -197,10 +191,9 @@ const VotingPage: React.FC = () => {
             const response = await castVote(selectedCandidate);
 
             if (response.success) {
-                toast({
-                    title: "Vote Cast Successfully!",
-                    description: "Thank you for voting!",
-                });
+
+                showToast( "Vote Cast Successfully!", 'error')
+
 
                 // Clear token from localStorage after successful vote
                 localStorage.removeItem('voting_token');
@@ -211,19 +204,12 @@ const VotingPage: React.FC = () => {
                 router.push(`/voting/${ticketData?.ticket}/casted-vote?candidate=${encodeURIComponent(candidateName)}`);
             } else {
                 const errorMessage = response.message || 'Failed to cast vote';
-                toast({
-                    title: "Error",
-                    description: errorMessage,
-                    variant: "destructive",
-                });
+                showToast( errorMessage , 'error')
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to cast vote';
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( errorMessage , 'error')
+
             console.error('Failed to cast vote:', err);
         } finally {
             setCastingVote(false);
@@ -444,6 +430,7 @@ const VotingPage: React.FC = () => {
                 confirmText="Proceed"
                 cancelText="Cancel"
             />
+            {ToastContainerComponent}
         </div>
     );
 };

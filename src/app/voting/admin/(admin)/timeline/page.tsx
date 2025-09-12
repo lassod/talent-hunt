@@ -4,7 +4,7 @@ import { MdAccessTime, MdStop, MdSchedule } from 'react-icons/md';
 import { IoPlayOutline } from "react-icons/io5";
 
 import axios from "@/lib/axios";
-import { toast } from "@/components/ui/use-toast";
+import {useToast} from "@/hooks/toastHooks";
 
 // API Response interface
 interface ApiResponse<T = any> {
@@ -42,6 +42,18 @@ const startVotingNow = async (timelineId: string): Promise<ApiResponse<TimelineD
         return response.data;
     } catch (error) {
         console.error('Error starting voting:', error);
+        throw error;
+    }
+};
+
+const stopVotingNow = async (timelineId: string): Promise<ApiResponse<TimelineData>> => {
+    try {
+        const response = await axios.patch<ApiResponse<TimelineData>>(`/v1/timelines/${timelineId}`,{
+            status: 'not_started',
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error stoping voting:', error);
         throw error;
     }
 };
@@ -105,6 +117,8 @@ const TimelinePage: React.FC = () => {
     const [newStartTime, setNewStartTime] = useState<string>('');
     const [newEndTime, setNewEndTime] = useState<string>('');
 
+    const { showToast, ToastContainerComponent} = useToast()
+
     useEffect(() => {
         loadTimeline();
 
@@ -136,19 +150,12 @@ const TimelinePage: React.FC = () => {
             if (response.success && response.data) {
                 setTimeline(response.data);
             } else {
-                toast({
-                    title: "Error",
-                    description: response.message || "Failed to load timeline",
-                    variant: "destructive",
-                });
+                showToast(`${response.message || 'Failed to load timeline' }`, 'error')
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to load timeline';
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast(`${errorMessage}`, 'error')
+
             console.error(err);
         } finally {
             setLoading(false);
@@ -162,24 +169,34 @@ const TimelinePage: React.FC = () => {
 
             if (response.success && response.data) {
                 setTimeline(response.data);
-                toast({
-                    title: "Voting Started",
-                    description: "Voting has been started successfully",
-                });
+                showToast( 'Voting started ' , 'success')
+
             } else {
-                toast({
-                    title: "Error",
-                    description: response.message || "Failed to start voting",
-                    variant: "destructive",
-                });
+                showToast(`${response.message || 'Failed to start voting' }`, 'error')
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to start voting';
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast(`${errorMessage}`, 'error')
+
+            console.error(err);
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    const handleStopNow = async (): Promise<void> => {
+        try {
+            setUpdating(true);
+            const response = await stopVotingNow(timeline?.id ?? '');
+
+            if (response.success && response.data) {
+                setTimeline(response.data);
+                showToast('Voting stopped', 'success')
+            }
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || 'Failed to stop voting';
+            showToast(`${errorMessage  }`, 'error')
+
             console.error(err);
         } finally {
             setUpdating(false);
@@ -188,20 +205,15 @@ const TimelinePage: React.FC = () => {
 
     const handleUpdateSchedule = async (): Promise<void> => {
         if (!timeline) {
-            toast({
-                title: "Error",
-                description: "Timeline data not available",
-                variant: "destructive",
-            });
+            showToast('Timeline data not available', 'error')
+
+
             return;
         }
 
         if (!newStartTime || !newEndTime) {
-            toast({
-                title: "Validation Error",
-                description: "Please select both start and end times",
-                variant: "destructive",
-            });
+            showToast('Please select both start and end time ' , 'error')
+
             return;
         }
 
@@ -209,11 +221,9 @@ const TimelinePage: React.FC = () => {
         const end = new Date(newEndTime);
 
         if (end <= start) {
-            toast({
-                title: "Validation Error",
-                description: "End time must be after start time",
-                variant: "destructive",
-            });
+            showToast( 'End time must be after start time ', 'error')
+
+
             return;
         }
 
@@ -223,24 +233,14 @@ const TimelinePage: React.FC = () => {
 
             if (response.success && response.data) {
                 setTimeline(response.data);
-                toast({
-                    title: "Schedule Updated",
-                    description: "Voting schedule has been updated successfully",
-                });
+                showToast( 'Voting schedule has been updated successfully' , 'success')
             } else {
-                toast({
-                    title: "Error",
-                    description: response.message || "Failed to update schedule",
-                    variant: "destructive",
-                });
+                showToast( `${response.message || "Failed to update schedule"}` , 'error')
+
             }
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Failed to update schedule';
-            toast({
-                title: "Error",
-                description: errorMessage,
-                variant: "destructive",
-            });
+            showToast( `${errorMessage }` , 'error')
             console.error(err);
         } finally {
             setUpdating(false);
@@ -374,11 +374,26 @@ const TimelinePage: React.FC = () => {
                             </button>
 
                             <button
-                                disabled={timeline?.status !== 'started'}
-                                className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-gray-200 text-gray-500 cursor-not-allowed"
+                                onClick={handleStopNow}
+                                disabled={timeline?.status === 'not_started' || updating}
+
+                                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                    updating || timeline?.status==="not_started"
+                                        ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                        : 'bg-red-500 text-white hover:bg-red-600'
+                                }`}
                             >
-                                <MdStop className="w-4 h-4" />
-                                Stop
+                                {updating ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
+                                        Stopping...
+                                    </>
+                                ) : (
+                                    <>
+                                        <MdStop className="w-4 h-4" />
+                                        Stop now
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -459,6 +474,7 @@ const TimelinePage: React.FC = () => {
                     </div>
                 </div>
             )}
+            {ToastContainerComponent}
         </div>
     );
 };
