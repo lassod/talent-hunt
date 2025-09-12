@@ -37,6 +37,7 @@ interface ContestantResult {
     name: string;
     talent: string;
     totalVotes: number;
+    userTotalVotes: number
     percentage: number;
     image: string;
     rank?: number;
@@ -296,7 +297,7 @@ const AdminResults: React.FC = () => {
 
                                     {/* Votes */}
                                     <div className="text-right min-w-[80px]">
-                                        <p className="font-semibold text-gray-900">{contestant.totalVotes.toLocaleString()}</p>
+                                        <p className="font-semibold text-gray-900">{contestant.userTotalVotes.toLocaleString()}</p>
                                         <p className="text-xs text-gray-500">{contestant.percentage || 0}%</p>
                                     </div>
 
