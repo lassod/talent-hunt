@@ -192,7 +192,7 @@ const VotingPage: React.FC = () => {
 
             if (response.success) {
 
-                showToast( "Vote Cast Successfully!", 'error')
+                showToast( "Vote Cast Successfully!", 'success')
 
 
                 // Clear token from localStorage after successful vote
